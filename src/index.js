@@ -173,7 +173,7 @@ app.get("/dashboard", verifyFirebaseToken, async (req, res) => {
 
     const totalTasks = allTodos.length;
     const completedTasks = allTodos.filter((todo) => todo.status).length;
-    const taskCompletionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+    const taskCompletionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : "No data";
 
     const tasksCompletedTodayCount = completedTodosToday.length;
     const tasksCompletedYesterdayCount = completedTodosYesterday.length;
