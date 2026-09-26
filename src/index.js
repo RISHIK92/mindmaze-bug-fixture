@@ -9,7 +9,7 @@ import routerNotes from "./routes/notes.js";
 import routerGoal from "./routes/goal.js";
 import routerPlanner from "./routes/planner.js";
 import cors from "cors";
-import { projectBreakdown, taskCompletionRate } from "./lib/dashboardStats.js";
+import { projectBreakdown } from "./lib/dashboardStats.js";
 import { verifyFirebaseToken } from "./middleware/middleware.js";
 
 const app = express();
