@@ -5,8 +5,7 @@ import { projectBreakdown, taskCompletionRate } from "../src/lib/dashboardStats.
 const p = (progress) => ({ progress });
 
 test("every project lands in exactly one bucket", () => {
-  const projects = [0, 10, 30, 49, 50, 89, 90, 100].map(p);
-  const b = projectBreakdown(projects);
+  const b = projectBreakdown([0, 10, 30, 49, 50, 89, 90, 100].map(p));
   assert.equal(b.onTrack + b.atRisk + b.delayed + b.completed, b.total);
 });
 
@@ -17,10 +16,9 @@ test("finished projects are reported as completed", () => {
 });
 
 test("bucket boundaries", () => {
-  assert.deepEqual(
-    projectBreakdown([p(24), p(25), p(49), p(50)]),
-    { total: 4, onTrack: 1, atRisk: 2, delayed: 1, completed: 0 }
-  );
+  assert.deepEqual(projectBreakdown([p(24), p(25), p(49), p(50)]), {
+    total: 4, onTrack: 1, atRisk: 2, delayed: 1, completed: 0,
+  });
 });
 
 test("task completion rate", () => {
