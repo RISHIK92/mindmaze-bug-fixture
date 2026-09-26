@@ -1,6 +1,7 @@
 import express from "express";
 import { verifyFirebaseToken } from "../middleware/middleware.js";
 import { prisma } from "../index.js";
+import { currentStreak, longestStreak } from "../lib/streaks.js";
 
 const router = express.Router();
 
@@ -77,6 +78,21 @@ router.get("/", verifyFirebaseToken, async (req, res) => {
       error: "Internal server error",
       details: error.message,
     });
+  }
+});
+
+router.get("/streak", verifyFirebaseToken, async (req, res) => {
+  try {
+    const entries = await prisma.timeManagement.findMany({
+      where: { userId: req.user.uid },
+      select: { createdAt: true },
+    });
+    res.json({
+      success: true,
+      data: { current: currentStreak(entries), longest: longestStreak(entries) },
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
 

@@ -115,6 +115,7 @@ model Planner {
   categories  String
   deadline    String
   date        DateTime
+  recurrence  Json?
   createdAt   DateTime    @default(now())
 
   userId      String

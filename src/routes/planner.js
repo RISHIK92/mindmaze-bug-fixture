@@ -1,6 +1,7 @@
 import express from "express";
 import { verifyFirebaseToken } from "../middleware/middleware.js";
 import { prisma } from "../index.js";
+import { expand } from "../lib/recurrence.js";
 
 const router = express.Router();
 
@@ -36,6 +37,22 @@ router.get("/", verifyFirebaseToken, async (req, res) => {
     res.json(planners);
   } catch (error) {
     res.status(500).json({ msg: "Error fetching planner tasks", error });
+  }
+});
+
+router.get("/occurrences", verifyFirebaseToken, async (req, res) => {
+  try {
+    const { from, to } = req.query;
+    if (!from || !to) return res.status(400).json({ msg: "from and to are required" });
+    const tasks = await prisma.planner.findMany({
+      where: { userId: req.user.uid, recurrence: { not: null } },
+    });
+    const data = tasks.flatMap((t) =>
+      expand(t.recurrence, from, to).map((date) => ({ id: t.id, task: t.task, date }))
+    );
+    res.json(data.sort((a, b) => a.date.localeCompare(b.date)));
+  } catch (error) {
+    res.status(500).json({ msg: "Error expanding planner tasks", error });
   }
 });
 
