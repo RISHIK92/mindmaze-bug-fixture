@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String         @id
+  email      String?        @unique
+  password   String?
+  createdAt  DateTime       @default(now())
+
+  workspaces      Workspace[]
+  todos           Todo[]
+  timeManagement  TimeManagement[]
+  projects        Project[]
+  notes           Note[]
+  goals           Goal[]
+  planners        Planner[]
+}
+
+model Workspace {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // You can add todos relation here if needed per workspace
+  // todos     Todo[]
+}
+
+model Todo {
+  id          Int         @id @default(autoincrement())
+  status      Boolean     @default(false) 
+  todo        String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // workspaceId Int?
+  // workspace   Workspace?  @relation(fields: [workspaceId], references: [id])
+}
+
+model TimeManagement {
+  id          String      @id @default(cuid())
+  text        String
+  data        String
+  completedAt Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // workspaceId Int?
+  // workspace   Workspace?  @relation(fields: [workspaceId], references: [id])
+}
+
+model Project {
+  id          Int         @id @default(autoincrement())
+  projectName String
+  deadline    DateTime
+  progress    Int         @default(0)
+  createdAt   DateTime    @default(now())
+
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // workspaceId Int?
+  // workspace   Workspace?  @relation(fields: [workspaceId], references: [id])
+}
+
+model Note {
+  id          Int         @id @default(autoincrement())
+  title       String
+  notes       String
+  calendar    DateTime    // Fixed typo: was "calander"
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // workspaceId Int?
+  // workspace   Workspace?  @relation(fields: [workspaceId], references: [id])
+}
+
+model Goal {
+  id          Int         @id @default(autoincrement())
+  goal        String
+  deadline    String
+  progress    Int         @default(0)
+  createdAt   DateTime    @default(now())
+
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // workspaceId Int?
+  // workspace   Workspace?  @relation(fields: [workspaceId], references: [id])
+}
+
+model Planner {
+  id          Int         @id @default(autoincrement())
+  task        String
+  priority    String
+  categories  String
+  deadline    String
+  date        DateTime
+  createdAt   DateTime    @default(now())
+
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // workspaceId Int?
+  // workspace   Workspace?  @relation(fields: [workspaceId], references: [id])
+}
