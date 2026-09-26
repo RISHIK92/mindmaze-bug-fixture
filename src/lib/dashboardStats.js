@@ -8,6 +8,6 @@ export function projectBreakdown(projects) {
 }
 
 export function taskCompletionRate(todos) {
-  if (todos.length === 0) return 0;
+  if (todos.length === 0) return "No data";
   return Math.round((todos.filter((t) => t.status).length / todos.length) * 100);
 }
